@@ -116,18 +116,14 @@ public class ArbolBinariodeBusqueda {
         else {
             // Encontrar el sucesor inorden (mínimo del subárbol derecho)
             NodoBinario sucesor = encontrarMinimo(nodoABorrar.getHijoDerecho());
-            String valorSucesor = sucesor.getValor();
             
-            // Borrar el sucesor (será caso 1 o 2, nunca caso 3)
-            borrar(valorSucesor);
-            
-            // Reemplazar el valor del nodo actual con el del sucesor
-            // Necesitamos crear un nuevo nodo porque valor es inmutable
-            NodoBinario reemplazo = new NodoBinario(valorSucesor);
+            // Crear nuevo nodo con el valor del sucesor
+            NodoBinario reemplazo = new NodoBinario(sucesor.getValor());
             reemplazo.setHijoIzquierdo(nodoABorrar.getHijoIzquierdo());
             reemplazo.setHijoDerecho(nodoABorrar.getHijoDerecho());
             reemplazo.setPadre(nodoABorrar.getPadre());
             
+            // Actualizar referencias de los hijos
             if (nodoABorrar.getHijoIzquierdo() != null) {
                 nodoABorrar.getHijoIzquierdo().setPadre(reemplazo);
             }
@@ -135,6 +131,7 @@ public class ArbolBinariodeBusqueda {
                 nodoABorrar.getHijoDerecho().setPadre(reemplazo);
             }
             
+            // Actualizar referencia del padre o raíz
             if (nodoABorrar == raiz) {
                 raiz = reemplazo;
             } else {
@@ -144,6 +141,18 @@ public class ArbolBinariodeBusqueda {
                 } else {
                     padre.setHijoDerecho(reemplazo);
                 }
+            }
+            
+            // Ahora borrar el sucesor de su posición original
+            // El sucesor siempre será una hoja o tendrá solo hijo derecho
+            if (sucesor.getPadre().getHijoIzquierdo() == sucesor) {
+                sucesor.getPadre().setHijoIzquierdo(sucesor.getHijoDerecho());
+            } else {
+                sucesor.getPadre().setHijoDerecho(sucesor.getHijoDerecho());
+            }
+            
+            if (sucesor.getHijoDerecho() != null) {
+                sucesor.getHijoDerecho().setPadre(sucesor.getPadre());
             }
         }
         
@@ -231,3 +240,4 @@ public class ArbolBinariodeBusqueda {
             }
         }
     }
+}
